@@ -1,0 +1,16 @@
+{% extends 'News/default.html' %}
+ 
+{% block title %} Post list {% endblock title %}
+
+{% block content %}
+<h3 align="center">Добавить Новость/статью</h3>
+<div class="col-md-6 pt-3 px-md-2 px-lg-1">
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+
+    <input type="submit" value="Добавить на сайт">
+</form>
+</div>
+{% endblock content %}

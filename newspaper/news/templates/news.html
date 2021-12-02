@@ -1,0 +1,114 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'News/default.html' %}
+
+{% load custom_filters %}
+
+<!-- Название у нас будет proudcts -->
+{% block title %}
+News
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+       {% block news_length %}
+<h2> Все новости: кол-во {{ news|length }} </h2>
+       {% endblock news_length %}
+
+       {% block comment %}
+<!--    {% if comments %}-->
+        {% for comment in comments %}
+{{ comment.name }}
+        {% endfor %}
+<!--    {% else %}-->
+<!--        <h5>Комментариев нет</h5>-->
+<!--    {% endif %}-->
+
+       {% endblock comment %}
+
+
+{% block content %}
+    {% if news %}
+        {% for new in news %}
+            <article class="entry">
+<!-- Пост с картинкой -->
+            {% if new.photo %}
+              <div class="entry-img">
+                <img src="{% if new.photo %}{{ new.photo.url }} {% endif %}" alt="" class="img-fluid">
+              </div>
+            {% endif %}
+              <h2 class="entry-title">
+                <a href="{{ new.get_absolute_url }}">{{ new.headingPost|censor }}</a>
+              </h2>
+
+              <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">{{ new.author }}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-single.html"><time datetime="{{ new.timeInCreation|date:'Y-M-d' }}">{{ new.timeInCreation|date:'d M Y' }}</time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">12 Comments</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-folder"></i> <a href="blog-single.html">{{ new.get_choicePost_display }}</a></li>
+                </ul>
+              </div>
+
+              <div class="entry-content">
+                <p>
+                  {{ new.textPost|truncatewords:20|censor }}
+                </p>
+                <div class="entry-footer">
+                    {% if new.postCategory.all %}
+                    <i class="bi bi-tags"></i>
+                    <ul class="tags">
+                {% for postCategory in new.postCategory.all %}
+                        <li><a href="#">{{ postCategory.name }}</a></li>
+                {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                    <div class="read-more">
+                        <a href="{{ new.get_absolute_url }}">Подробнее</a>
+                </div>
+              </div>
+
+            </article><!-- End blog entry -->
+        {% endfor %}
+    {% else %}
+        <h1>Новостей нет</h1>
+    {% endif %}
+
+
+<!-- закрываем блок с новостями -->
+<!-- Проверяем что поддерживается постраничный вывод -->
+{% if is_paginated %}
+
+            <div class="blog-pagination">
+              <ul class="justify-content-center">
+<!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+                                    {% if page_obj.has_previous %}
+<!--Ставим стрелку в лево-->
+                                    <li><a href="?page={{ page_obj.previous_page_number }}">&#9668;</a></li>
+                                        {% if not page_obj.number == 2 and not page_obj.number == 3 %}
+                                        <li><a href="?page=1">1</a></li>
+                                        {% endif %}
+                                    {% endif %}
+
+
+<!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                    <li class="active"><a href="?page={{ num }}">{{ num }}</a></li>
+                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li><a href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+<!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+                                    {% if page_obj.has_next %}
+<!-- Если разница между следующай странице и послденей меньше 2 то не даём ссылку на последнюю страницу -->
+                                        {% if not page_obj.next_page_number == page_obj.paginator.num_pages and not page_obj.next_page_number|add:'1' == page_obj.paginator.num_pages %}
+                                        <li><a href="">...</a></li>
+                                        <li><a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                        {% endif %}
+                                    <li><a href="?page={{ page_obj.next_page_number }}">&#9658;</a></li>
+                                    {% endif %}
+              </ul>
+            </div>
+{% endif %}
+
+{% endblock content %}

@@ -1,0 +1,97 @@
+{% extends 'News/default.html' %}
+<!-- Загружаем свой фильтр для работы пагинации -->
+{% load my_tags %}
+ 
+{% block title %} Post list {% endblock title %}
+ 
+{% block content %}
+
+<!-- Перед таблицей добавим форму для поиска -->
+<form method="GET"><br>
+    {{ filter.form }} <!-- Форму от фильтров за нас сделает django. А вот кнопку, увы придётся делать самому -->
+    <input type="submit" value="Найти">
+</form>
+ <br>
+<table>
+    <thead>
+        <th>
+            Заголовок
+        </th>
+        <th>
+            Автор
+        </th>
+        <th>
+            Дата публикации
+        </th>
+        <th>
+            Текст
+        </th>
+    </thead>
+    {% for post in post %} <!-- поменяем products на filter.qs, т. к. теперь мы забираем уже отобранную по каким-то параметрам информацию -->
+    <tr>
+        <td>
+            <a class="text-900 text-decoration-none" href="{{ post.get_absolute_url }}">{{ post.headingPost|title|truncatewords:5 }}</a>
+                        <a href="{% url 'post_edit' post.pk %}"><u>Редактировать</u></a> <!-- добавим ссылку на редактирование товара-->
+             <a href="{% url 'post_delete' post.id %}"><u> Удалить </u></a> <!-- добавим ссылку на удаление товара-->
+        </td>
+        <td>
+            {{ post.author.authorUser.username }} {{ post.author.authorUser.first_name }}
+        </td>
+        <td>
+            {{ post.timeInCreation|date:'d M Y' }}
+        </td>
+        <td>
+            {{ post.textPost|truncatewords:9 }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+  </div>
+
+<a href="{% url 'post_create' %}">Добавить новый товар</a> <br>
+
+<br>
+
+{% if is_paginated %}
+  {% if page_obj.has_previous %}
+    <a href="?{% param_replace page=1 %}">First</a>
+    {% if page_obj.previous_page_number != 1 %}
+      <a href="?{% param_replace page=page_obj.previous_page_number %}">Previous</a>
+    {% endif %}
+  {% endif %}
+
+  Page {{ page_obj.number }} of {{ paginator.num_pages }}
+
+  {% if page_obj.has_next %}
+    {% if page_obj.next_page_number != paginator.num_pages %}
+      <a href="?{% param_replace page=page_obj.next_page_number %}">Next</a>
+    {% endif %}
+    <a href="?{% param_replace page=paginator.num_pages %}">Last</a>
+  {% endif %}
+<!--  <p>Objects {{ page_obj.start_index }}&mdash;{{ page_obj.end_index }}</p>-->
+
+{% endif %}
+
+<!--{% if is_paginated %}-->
+<!-- -->
+<!--    {% if page_obj.has_previous %}-->
+<!--        <a href="?page=1">First</a>-->
+<!--        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>-->
+<!--    {% endif %}-->
+<!-- -->
+<!--    {% for num in page_obj.paginator.page_range %}-->
+<!--        {% if page_obj.number == num %}-->
+<!--            <a>{{ num }}</a>-->
+<!--        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}-->
+<!--            <a href="?page={{ num }}">{{ num }}</a>-->
+<!--        {% endif %}-->
+<!--    {% endfor %}-->
+<!-- -->
+<!--    {% if page_obj.has_next %}-->
+<!--        <a href="?page={{ page_obj.next_page_number }}">>>></a>-->
+<!--        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>-->
+<!--    {% endif %}-->
+<!-- -->
+<!--{% endif %}-->
+{% endblock content %}

@@ -1,0 +1,122 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'News/default.html' %}
+{% load custom_filters %}
+{% load static %}
+
+<!-- Название у нас будет proudcts -->
+{% block title %}
+{{ new.headingPost|censor }}
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+            <article class="entry">
+<!-- Пост с картинкой -->
+            {% if new.photo %}
+              <div class="entry-img">
+                <img src="{% if new.photo %}{{ new.photo.url }} {% endif %}" alt="" class="img-fluid">
+              </div>
+            {% endif %}
+              <h2 class="entry-title">
+                {{ new.headingPost|censor }}
+              </h2>
+
+              <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">{{ new.author }}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-single.html"><time datetime="{{ new.timeInCreation|date:'Y-M-d' }}">{{ new.timeInCreation|date:'d M Y' }}</time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">12 Comments</a></li>
+                  </ul>
+              </div>
+
+              <div class="entry-content">
+                <p>
+                  {{ new.textPost|censor }}
+                </p>
+                <div class="entry-footer">
+                    <i class="bi bi-folder"></i>
+                    <ul class="cats">
+                    <li><a href="blog-single.html">{{ new.get_choicePost_display }}</a></li>
+                    {% if new.postCategory.all %}
+                    <i class="bi bi-tags"></i>
+                    <ul class="tags">
+                {% for postCategory in new.postCategory.all %}
+                        <li><a href="#">{{ postCategory.name }}</a></li>
+                {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+              </div>
+
+            </article><!-- End blog entry -->
+
+<!--Контейнер автора-->
+            <div class="blog-author d-flex align-items-center">
+              <img src="{% static 'assets/img/blog/blog-author.jpg' %}" class="rounded-circle float-left" alt="">
+              <div>
+                <h4>{{ new.author }}</h4>
+                <div class="social-links">
+                  <a href="https://twitters.com/#"><i class="bi bi-twitter"></i></a>
+                  <a href="https://facebook.com/#"><i class="bi bi-facebook"></i></a>
+                  <a href="https://instagram.com/#"><i class="biu bi-instagram"></i></a>
+                </div>
+                <p>
+                  Itaque quidem optio quia voluptatibus dolorem dolor. Modi eum sed possimus accusantium. Quas repellat voluptatem officia numquam sint aspernatur voluptas. Esse et accusantium ut unde voluptas.
+                </p>
+              </div>
+            </div><!-- End blog author bio -->
+
+<!--Блок коментариев-->
+            <div class="blog-comments">
+
+
+              <h4 class="comments-count">8 Comments</h4>
+    {% for comment in new.comment_set.all %}
+                <div id="comment-1" class="comment">
+                <div class="d-flex">
+                  <div class="comment-img"><img src="{% static 'assets/img/blog/comments-1.jpg' %}" alt=""></div>
+                  <div>
+                    <h5><a href="">{{ comment.commentUser.username }}</a> &#10072; {{ comment.ratingComment }} <a href="#" class="reply"><i class="bi bi-chevron-compact-up"></i></a>
+                    &#10072;<a href="#" class="reply"><i class="bi bi-chevron-compact-down"></i></a></h5>
+                    <time datetime="2020-01-01">{{ comment.timeInCreation|date:'d M Y' }}</time>
+                    <p>{{ comment.text|censor }}</p>
+                  </div>
+                </div>
+                </div>
+                    {% endfor %}
+            </div>
+                <!-- конец блока коментариев-->
+
+                <div class="reply-form">
+                <h4>Leave a Reply</h4>
+                <p>Your email address will not be published. Required fields are marked * </p>
+                <form action="">
+                  <div class="row">
+                    <div class="col-md-6 form-group">
+                      <input name="name" type="text" class="form-control" placeholder="Your Name*">
+                    </div>
+                    <div class="col-md-6 form-group">
+                      <input name="email" type="text" class="form-control" placeholder="Your Email*">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col form-group">
+                      <input name="website" type="text" class="form-control" placeholder="Your Website">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col form-group">
+                      <textarea name="comment" class="form-control" placeholder="Your Comment*"></textarea>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Post Comment</button>
+
+                </form>
+
+              </div>
+
+
+
+                <!-- End blog entries list -->
+
+{% endblock content %}

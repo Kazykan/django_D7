@@ -1,0 +1,20 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'News/default.html' %}
+{% load custom_filters %}
+
+<!-- Название у нас будет proudcts -->
+{% block title %}
+{{ new.headingPost|censor }}
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+<h2>Вы действительно хотите удалить эту - {{ post.get_choicePost_display }}?</h2>
+<form method="POST">
+    {% csrf_token %}
+    <input type="submit" value="подтвердить"></form>
+<h1>{{ post.headingPost|censor }}</h1>
+<p align="right">автор: {{ post.author }} -- {{ post.timeInCreation|date:'d M Y H:m' }}</p>
+<hr>
+<p style="text-align: left;">{{ post.textPost|censor }}</p>
+{% endblock content %}

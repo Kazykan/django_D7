@@ -1,0 +1,79 @@
+<!--  наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'News/default.html' %}
+
+{% load custom_filters %}
+
+<!-- Название у нас будет proudcts -->
+{% block title %}
+News
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+       {% block news_length %}
+<h2>Все новости</h2>
+<p>кол-во {{ news|length }}</p>
+       {% endblock news_length %}
+
+       {% block comment %}
+<!--    {% if comments %}-->
+        {% for comment in comments %}
+{{ comment.text }} - {{ comment.timeInCreation }} Рейтин: {{ comment.ratingComment }}
+{{ comment }}
+        {% endfor %}
+<!--    {% else %}-->
+<!--        <h5>Комментариев нет</h5>-->
+<!--    {% endif %}-->
+
+       {% endblock comment %}
+
+
+{% block content %}
+    {% if news %}
+        {% for new in news %}
+
+            <div class="col-md-6 pt-3 px-md-2 px-lg-1">
+              <div class="card h-100">
+                <div class="card-body d-flex flex-column justify-content-around mx-auto">
+                  <div class="text-left pt-1">
+                    <h5 class="my-2">
+                    <a class="text-900 text-decoration-none" href="{{ new.get_absolute_url }}">{{ new.headingPost|censor }}</a></h5>
+                  </div>
+                  <ul class="list-unstyled">
+                    <li class="mb-3">{{ new.textPost|truncatewords:20|censor }}
+                        <br><p align="right">{{ new.author }} {{ new.timeInCreation|date:'d M Y' }}</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h1>Новостей нет</h1>
+    {% endif %}
+          </div>
+<!-- закрываем блок с новостями -->
+<!-- Проверяем что поддерживается постраничный вывод -->
+{% if is_paginated %}
+ <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+    {% endif %}
+
+    <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a>{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">>>></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+{% endif %}
+{% endblock content %}

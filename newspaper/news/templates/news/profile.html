@@ -1,0 +1,44 @@
+{% extends 'News/default.html' %}
+{% load static %}
+
+{% block news_length %}
+<h2> Страница авторизованного пользователя {{ request.user.username }} </h2>
+{% endblock news_length %}
+
+{% block content %}
+You have successfully subscribed to:
+  <ul>
+
+
+    {% for category in categories.all %}
+    {% if request.user == category.subscriberUser %}
+        <li>{{ category.get_category_sub }} <a href="{% url 'unsub_cat' category.categorySub.id %}">Unsubscribe</a>
+              </li>
+    {%endif%}
+    {% endfor %}
+  </ul>
+
+{% if request.user.username %}<h3>
+{% if is_not_authors %} {{request.user.username}} <a href="/upgrade/">Стать автором</a>
+{% endif %}</h3><br>
+{% endif %}
+
+
+
+{% if is_not_authors %}
+<p>
+  If you want to be an author and post in this blog, press the button below
+</p>
+<a href="{% url 'sign:upgrade' %}">
+  <button class="button-warning pure-button">
+    Make me an Author!
+  </button>
+</a>
+{% endif %}
+
+<a href="{% url 'sign:logout'}">
+  <button class="button-primary pure-button">
+    Выйти
+  </button>
+</a>
+{% endblock %}
