@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from .models import Post, PostCategory, CategorySub
-from NewsPaper import config
+from newspaper import config
 
 
 @receiver(post_save, sender=Post)

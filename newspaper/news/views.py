@@ -75,7 +75,7 @@ class PostCreateView(PermissionRequiredMixin, CreateView):  # доб. парам
     """добавление поста + разграничение доступа через PermissionRequiredMixin + permission_required """
     template_name = 'post_create.html'
     form_class = PostForm
-    permission_required = ('News.add_post', 'News.add_postCategory',)
+    permission_required = ('news.add_post', 'news.add_postCategory',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -92,7 +92,7 @@ class PostCreateView(PermissionRequiredMixin, CreateView):  # доб. парам
 class PostUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'post_edit.html'
     form_class = PostForm
-    permission_required = ('News.change_post', 'News.change_postCategory',)  # редактирование постов
+    permission_required = ('news.change_post', 'news.change_postCategory',)  # редактирование постов
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
@@ -104,7 +104,7 @@ class PostDeleteView(PermissionRequiredMixin, DeleteView):
     template_name = 'post_delete.html'
     queryset = Post.objects.all()
     success_url = '/'
-    permission_required = ('News.delete_post', 'News.delete_postCategory', )  # удаление постов
+    permission_required = ('news.delete_post', 'news.delete_postCategory', )  # удаление постов
 
 
 class ProfileView(ListView):
