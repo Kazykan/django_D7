@@ -1,5 +1,5 @@
 <!--наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
-{% extends 'news/layout.html' %}
+{% extends 'news/default.html' %}
 {% load custom_filters %}
 <!--   Название у нас будет  -->
 {% block title %} The news {% endblock title %}
@@ -8,7 +8,7 @@
 <!--  loop -->
 <h3 class="content-subhead">
   Found
-  {{filter.qs|length}} posts on query:
+  {{ filter.qs|length }} posts on query:
   <span>{{ name }}</span>
 </h3>
 
@@ -18,7 +18,6 @@
     Subscribe to
     <em>{{ name }}</em>?
   </strong>
-  <a href="{% url 'news:sub_cat' name.id %}">
     <button class="pure-button button-success">
       <i class="bi bi-bookmark-plus"></i>
       Subscribe
@@ -89,43 +88,52 @@
 
 <hr>
 
-{% for n in posts %}
+    {% if news %}
+        {% for new in news %}
+            <article class="entry">
+<!-- Пост с картинкой -->
+            {% if new.photo %}
+              <div class="entry-img">
+                <img src="{% if new.photo %}{{ new.photo.url }} {% endif %}" alt="" class="img-fluid">
+              </div>
+            {% endif %}
+              <h2 class="entry-title">
+                <a href="{{ new.get_absolute_url }}">{{ new.headingPost|censor }}</a>
+              </h2>
 
-<!--  A single blog post -->
-<section class="post">
-  <header class="post-header"><img class="post-avatar" src="/{{  n.author.avatar }}" alt="avatar" />
-    <a href="{% url 'news:post_view' n.id %}">
-      <h2 class="post-title">{{n.title|censor}}</h2>
-    </a>
-    <p class="post-meta">By
-      <a class="post-author" href="{% url 'news:author_name' n.author_id %}">
-        {{ n.author }}
-      </a>
-      on
-      <em>{{ n.dateCreated|date:'d M Y H:i' }}
-      </em>
-      Type:
-      <a class="post-category post-type-{{n.categoryType}}" href="{% url 'news:post_type' n.categoryType %}">
-        <span>
-          {{n.get_categoryType_display}}
-        </span>
-      </a>
-      Tags:
-      {% for tag in n.postCategory.values %}
-      <a class="post-category post-category-{{tag.id}}" href="{% url 'news:post_tag' tag.id %}">
-        {{tag.name }}
-      </a>
-      {%endfor%}
-    </p>
-  </header>
-  <div class="post-description">
-    <p>{{ n.text|censor | truncatewords:25 }}</p>
-    <p><em>Article rating: {{n.rating}} </em></p>
-  </div>
-</section>
-<hr />
+              <div class="entry-meta">
+                <ul>
+                  <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-single.html">{{ new.author }}</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-single.html"><time datetime="{{ new.timeInCreation|date:'Y-M-d' }}">{{ new.timeInCreation|date:'d M Y' }}</time></a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-single.html">12 Comments</a></li>
+                  <li class="d-flex align-items-center"><i class="bi bi-folder"></i> <a href="blog-single.html">{{ new.get_choicePost_display }}</a></li>
+                </ul>
+              </div>
 
-{%endfor%}
+              <div class="entry-content">
+                <p>
+                  {{ new.textPost|truncatewords:20|censor }}
+                </p>
+                <div class="entry-footer">
+                    {% if new.postCategory.all %}
+                    <i class="bi bi-tags"></i>
+                    <ul class="tags">
+                {% for postCategory in new.postCategory.all %}
+                        <li><a href="{% url 'post_tag' postCategory.id %}">{{ postCategory.name }}</a></li>
+                {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                    <div class="read-more">
+                        <a href="{{ new.get_absolute_url }}">Подробнее</a>
+                </div>
+              </div>
+
+            </article><!-- End blog entry -->
+        {% endfor %}
+    {% else %}
+        <h1>Новостей нет</h1>
+    {% endif %}
 
 
 

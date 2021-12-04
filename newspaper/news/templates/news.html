@@ -57,7 +57,7 @@ News
                     <i class="bi bi-tags"></i>
                     <ul class="tags">
                 {% for postCategory in new.postCategory.all %}
-                        <li><a href="#">{{ postCategory.name }}</a></li>
+                        <li><a href="{% url 'post_tag' postCategory.id %}">{{ postCategory.name }}</a></li>
                 {% endfor %}
                     </ul>
                 </div>

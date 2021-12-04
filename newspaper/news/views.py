@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from django.views.generic.edit import UpdateView
 from .filters import PostFilter
@@ -116,7 +117,6 @@ class ProfileView(ListView):
 
 def page_name(r):
     req = resolve(r.path_info).kwargs['name']
-    # print(req)
     return req
 
 
@@ -165,10 +165,12 @@ class PostType(ListView):
 
 
 class PostTag(ListView):
+    """страница с тегами и возможностью подписаться на них"""
     model = Post
     template_name = 'news/subcat/filtered.html'
-    context_object_name = 'posts'
+    context_object_name = 'news'
     paginate_by = 10
+    ordering = ['-timeInCreation']
 
     def get_queryset(self):
         self.id = resolve(self.request.path_info).kwargs['pk']
