@@ -1,25 +1,9 @@
 from django.template.loader import render_to_string
 from .models import Post
 from datetime import timedelta, date
-from celery.schedules import crontab
-
 from celery import shared_task  # Для работы Celery
-import time
+
 from .signals import sending_an_email
-
-
-@shared_task
-def hello():
-    """проверка работы celery"""
-    time.sleep(10)
-    print("Hello, world!")
-
-
-@shared_task
-def printer(N):
-    for i in range(N):
-        time.sleep(1)
-        print(i+1)
 
 
 def get_email_list_subscribers(category):
@@ -78,11 +62,8 @@ def notify_subscribers_weekly(day):
     for category in past_week_categories:
         """категории постов передаем ф-ции get_email_list_subscribers и
         получаем список почтовых адресов"""
-        # # print(category.subscribers.all())
-        # email_subject = f'New post in category: "{category}"'
         get_user_emails = (set(get_email_list_subscribers(category)))
         user_emails.update(get_user_emails)
-        print(get_user_emails)
 
     for user_email in user_emails:
         post_object = []
@@ -90,16 +71,11 @@ def notify_subscribers_weekly(day):
 
         for post in past_week_posts:
             subscription = post.postCategory.all().values('subscribers').filter(subscribers__email=user_email)
-            print(subscription)
 
             if subscription.exists():
                 post_object.append(post)
                 category_set.update(post.postCategory.filter(subscribers__email=user_email))
-        print(user_email)
-        print(post_object)
         category_object = list(category_set)
-        print(category_object)
-        print(set(post.postCategory.all()))
 
         send_emails(
             post_object,
