@@ -30,3 +30,7 @@ celery -A newspaper worker -l INFO
 ```sh
 celery -A newspaper beat -l INFO
 ```
+
+## Скриншоты
+
+![Скриншот](./D7_1.jpg)
