@@ -12,6 +12,10 @@
 
 
 ## Installation
+
+Для работы приложения переименовываем файл:
+NewsPaper\NewsPaper\config_1.py   ---> config.py
+
 В окне терминала:
 ```sh
 python manage.py runserver
