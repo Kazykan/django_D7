@@ -36,9 +36,11 @@ def send_emails(post_object, *args, **kwargs):
         kwargs['template'],
         {'category_object': kwargs['category_object'], 'post_object': post_object},
     )
-    sending_an_email(subject=kwargs['email_subject'],
-                     html=html,
-                     list_of_subscribers=kwargs['user_emails'])
+    sending_an_email(kwargs['email_subject'], html, kwargs['user_emails'])
+
+    print(kwargs['email_subject'])
+    print(html)
+    print(kwargs['user_emails'])
 
 
 def new_post_subscription(instance):

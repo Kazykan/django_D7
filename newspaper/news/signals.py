@@ -63,16 +63,16 @@ def sending_an_email(subject, html, list_of_subscribers):
     print(f'subject____________________________{subject}')
     print(f'html________________________________{html}')
     print(f'list_of_subscribers_________________{list_of_subscribers}')
-    # msg = EmailMultiAlternatives(
-    #     subject=subject,
-    #     from_email=config.EMAIL_HOST_DJANGO,  # здесь указываете почту, с которой будете отправлять
-    #     to=list_of_subscribers,  # здесь список получателей. Например, секретарь, сам врач и т. д.
-    # )
-    # msg.attach_alternative(html, "text/html")
-    # msg.content_subtype = "html"
-    # try:
-    #     msg.send()
-    # except Exception as e:
-    #     print(e)
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        from_email=config.EMAIL_HOST_DJANGO,  # здесь указываете почту, с которой будете отправлять
+        to=list_of_subscribers,  # здесь список получателей. Например, секретарь, сам врач и т. д.
+    )
+    msg.attach_alternative(html, "text/html")
+    msg.content_subtype = "html"
+    try:
+        msg.send()
+    except Exception as e:
+        print(e)
 
 
