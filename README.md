@@ -34,3 +34,5 @@ celery -A newspaper beat -l INFO
 ## Скриншоты
 
 ![Скриншот](./D7_1.jpg)
+
+![Скриншот](./D7_2.jpg)

@@ -15,17 +15,9 @@
   {% for post in post_object %}
   {% for post_cat in post.postCategory.all %}
   {% if post_cat == category %}
-  <a href="http://127.0.0.1:8000{{ post.get_absolute_url }}">
-    <h2>
-      {{ post.headingPost }}
-    </h2>
-  </a>
+  <a href="http://127.0.0.1:8000{{ post.get_absolute_url }}"><h2> {{ post.headingPost }} </h2></a>
   <p>by {{ post.author }}</p>
   <p>{{ post.preview }}</p>
-  {% endif %}
-  {% endfor %}
-  {% endfor %}
-  {% endfor %}
+  {% endif %} {% endfor %} {% endfor %} {% endfor %}
 </body>
-
 </html>

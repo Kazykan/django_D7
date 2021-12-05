@@ -38,10 +38,6 @@ def send_emails(post_object, *args, **kwargs):
     )
     sending_an_email(kwargs['email_subject'], html, kwargs['user_emails'])
 
-    print(kwargs['email_subject'])
-    print(html)
-    print(kwargs['user_emails'])
-
 
 def new_post_subscription(instance):
     template = 'news/subcat/newpost.html'
@@ -78,8 +74,6 @@ def notify_subscribers_weekly(day):
         for category in post.postCategory.all():
             past_week_categories.add(category)
 
-    print(past_week_categories)
-
     user_emails = set()
     for category in past_week_categories:
         """категории постов передаем ф-ции get_email_list_subscribers и
@@ -99,7 +93,6 @@ def notify_subscribers_weekly(day):
             print(subscription)
 
             if subscription.exists():
-                # print(subscription)
                 post_object.append(post)
                 category_set.update(post.postCategory.filter(subscribers__email=user_email))
         print(user_email)

@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from django.views.generic.edit import UpdateView
 from .filters import PostFilter
@@ -207,10 +207,12 @@ def subscribe_to_category(request, pk):
         category_subscribe.subscribers.add(user)
         html = render_to_string('news/subcat/subscribers.html', {'categories': category_subscribe, 'user': user})
         subject = f'Вы подписались на категорию: {category_subscribe}'
-        list_of_subscribers = list(user.email)[0]  # преобразуем в список с одним значением
+        list_of_subscribers = user.email.split()  # преобразуем в список с одним значением
+        print(f'list_of_subscribers_______________________{list_of_subscribers}')
         sending_an_email(subject, html, list_of_subscribers)  # отпраляем письмо
-        return redirect('/news/profile/')
-    return redirect(request.META.get('HTTP_REFERER'))
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
